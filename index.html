@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#14110e">
+<title>TRU CORD</title>
+<style>
+:root{--bg:#14110e;--ink:#f4ecdf;--dim:#b7a898;--line:#3a3026;--rope:#d7a26a;--card:#211a14}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 Georgia,serif}
+button,input{font:inherit;color:inherit}
+header{padding:16px 16px 6px} h1{font-size:22px;letter-spacing:.14em;margin:0;font-weight:normal} h1 span{color:var(--rope)}
+.sub{color:var(--dim);font-size:13px}
+.bar{display:flex;gap:8px;padding:8px 16px} input{flex:1;background:#0e0c0a;border:1px solid var(--line);border-radius:8px;padding:10px}
+button{background:var(--rope);color:#1a140c;border:0;border-radius:8px;padding:10px 12px;font-weight:bold}
+main{padding:0 16px 28px} .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 10px}
+.k{color:var(--rope);font-size:12px;letter-spacing:.12em} .big{font-size:22px;margin:4px 0} .src{color:var(--dim);font-size:12px;margin-top:6px}
+</style>
+</head>
+<body>
+<header><h1>TRU <span>CORD</span></h1><p class="sub">Six knots. Steps only. Dress and set every one before it holds a person.</p></header>
+<div class="bar"><input id="q" placeholder="bowline, join, loop, hitch…"><button id="send">Send</button></div>
+<main id="out"></main>
+<script>
+const K=[
+{t:"Bowline",use:"A fixed loop that does not slip down. Rescue loop, mooring eye.",d:"Make a small overhand loop in the standing part, the bitter end coming up toward you. Pass the end up through that loop, around behind the standing part, and back down through the loop the way it came. Dress it until the loop is the size you need. Set it. A bowline in stiff rope can capsize. Do not use it alone as a life-support knot."},
+{t:"Sheet bend",use:"Join two ropes, including different thicknesses. The thicker rope makes the bight.",d:"Make a bight in the thicker rope. Pass the thinner end up through the bight, around behind both legs, and back under its own standing part, so it lies trapped against the bight. Two wraps (a double sheet bend) if the ropes differ a lot or are slick."},
+{t:"Square knot",use:"Bind a bundle or a bandage. Not a bend for two working ropes.",d:"Right end over left and through. Then left over right and through. The two free ends come out the same side of their loop, and the knot lies flat. If the ends come out on opposite sides you tied a granny. It slips. Do not join climbing ropes with it."},
+{t:"Clove hitch",use:"A quick hold to a post or rail. Not a permanent tie.",d:"Cross the rope over the post. Cross again above the first turn. Tuck the end under that second cross so both ends can be pulled. It binds when pulled sideways and walks if pulled along the post. Back it with a half hitch if it must stay."},
+{t:"Taut-line hitch",use:"A loop that slides one way and holds the other. Guy lines, tent stakes.",d:"Around the stake, back to the standing part. Two turns around the standing part toward the stake, inside the loop. One more turn outside the loop, on the side away from the stake. Dress it. It slides when you push the hitch, and it grips under load."},
+{t:"Two half hitches",use:"Tie a rope to a ring or post after the load is set.",d:"Pass the end around the ring. Take a half hitch around the standing part, then a second half hitch beside it. Set both. This finishes a load. It is not the knot that makes the load safe by itself."}
+];
+function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&","<":"<",">":">"}[c]));}
+function card(x){return `<article class="card"><div class="k">KNOT</div><div class="big">${esc(x.t)}</div><div>${esc(x.use)}</div><p>${esc(x.d)}</p><div class="src">Traditional working knots. Practice with scrap cord before it matters.</div></article>`;}
+function show(list){document.getElementById("out").innerHTML=list.map(card).join("");}
+function search(q){
+  q=(q||"").trim().toLowerCase();
+  if(!q){show(K);return;}
+  const hits=K.filter(x=>(x.t+" "+x.use+" "+x.d).toLowerCase().includes(q)||(q.includes("join")&&x.t==="Sheet bend")||(q.includes("loop")&&/bowline|taut/i.test(x.t)));
+  document.getElementById("out").innerHTML=hits.length?hits.map(card).join(""):`<article class="card"><div class="k">GAP</div><div class="big">Not packed</div><div>Only the six knots on this card. No invented tie.</div></article>`;
+}
+document.getElementById("send").onclick=()=>search(document.getElementById("q").value);
+document.getElementById("q").onkeydown=e=>{if(e.key==="Enter") search(e.target.value);};
+show(K);
+</script>
+</body>
+</html>
